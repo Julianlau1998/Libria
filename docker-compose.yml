@@ -1,0 +1,37 @@
+version: "3.8"
+services:
+  libria-sql:
+    image: libria-sql
+    container_name: libria-sql
+    build:
+      context: ./sql
+    volumes:
+      - ./sql/data:/var/lib/mysql_db
+    ports:
+      - "5432:5432"
+      
+  libria-service:
+    image: libria-service
+    container_name: libria-service
+    build:
+      context: ./libria_service
+    ports:
+      - 1324:1324
+    restart: on-failure
+    depends_on:
+      - libria-sql
+    environment:
+      - DB_USERNAME=postgres
+      - DB_PASSWORD=postgres
+      - DB_CONNECTION=libria-sql
+
+  libria-web:
+    image: libria-web
+    container_name: libria-web
+    build:
+      context: ./libria_web
+    depends_on:
+      - libria-service
+    ports:
+      - 8080:80
+    restart: on-failure
