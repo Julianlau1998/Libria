@@ -2,37 +2,76 @@ package answers
 
 import (
 	"libria/models"
+	"libria/votes"
 
 	uuid "github.com/nu7hatch/gouuid"
+	log "github.com/sirupsen/logrus"
 )
 
 type Service struct {
-	answerRepo Repository
+	answerRepo  Repository
+	voteService votes.Service
 }
 
-func NewService(answerRepository Repository) Service {
-	return Service{answerRepo: answerRepository}
+func NewService(answerRepository Repository, voteService votes.Service) Service {
+	return Service{
+		answerRepo:  answerRepository,
+		voteService: voteService,
+	}
 }
 
 func (s *Service) GetAll() ([]models.Answer, error) {
-	return s.answerRepo.GetAll()
+	answers, err := s.answerRepo.GetAll()
+	if err != nil {
+		log.Warnf("AnswerService.GetAll() Could not Load Answers: %s", err)
+		return answers, err
+	}
+	for _, answer := range answers {
+		answer.Votes, err = s.voteService.GetAllByAnswer(answer.ID)
+	}
+	return answers, err
 }
 
 func (s *Service) GetAllByTopic(topicId string) ([]models.Answer, error) {
-	return s.answerRepo.GetAllByTopic(topicId)
+	answers, err := s.answerRepo.GetAllByTopic(topicId)
+	if err != nil {
+		log.Warnf("AnswerService.GetAllByTopic() Could notLoad Answers by topic: %s", err)
+		return answers, err
+	}
+	for _, answer := range answers {
+		answer.Votes, err = s.voteService.GetAllByAnswer(answer.ID)
+	}
+	return answers, err
 }
 
 func (s *Service) GetById(id string) (models.Answer, error) {
-	return s.answerRepo.GetById(id)
+	answer, err := s.answerRepo.GetById(id)
+	if err != nil {
+		log.Warnf("AnswerService.GetById() Could not Load answer by id: %s", err)
+		return answer, err
+	}
+	answer.Votes, err = s.voteService.GetAllByAnswer(answer.ID)
+	return answer, err
 }
 
 func (s *Service) Post(answer *models.Answer) (*models.Answer, error) {
 	id, err := uuid.NewV4()
 	if err != nil {
+		log.Warnf("AnswerService.Post() Could not create new uuid: %s", err)
 		return answer, err
 	}
 	answer.ID = id.String()
-	return s.answerRepo.Post(answer)
+	answer, err = s.answerRepo.Post(answer)
+	if err != nil {
+		log.Warnf("AnswerService.Post() Could not Post Answer: %s", err)
+		return answer, err
+	}
+	var vote models.Vote
+	vote.AnswerID = answer.ID
+	vote.UserID = answer.UserID
+	vote.Upvote = "true"
+	_, err = s.voteService.Post(&vote)
+	return answer, err
 }
 
 func (s *Service) Update(id string, answer *models.Answer) (models.Answer, error) {

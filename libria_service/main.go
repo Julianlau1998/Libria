@@ -6,6 +6,7 @@ import (
 	"libria/answers"
 	"libria/topics"
 	"libria/utility"
+	"libria/votes"
 	"time"
 
 	"net/http"
@@ -25,13 +26,17 @@ func startup() {
 
 func main() {
 	startup()
-	TopicRepository := topics.NewRepository(dbClient)
-	TopicService := topics.NewService(TopicRepository)
-	TopicDelivery := topics.NewDelivery(TopicService)
+	VoteRepository := votes.NewRepository(dbClient)
+	VoteService := votes.NewService(VoteRepository)
+	VoteDelivery := votes.NewDelivery(VoteService)
 
 	AnswerRepository := answers.NewRepository(dbClient)
-	AnswerService := answers.NewService(AnswerRepository)
+	AnswerService := answers.NewService(AnswerRepository, VoteService)
 	AnswerDelivery := answers.NewDelivery(AnswerService)
+
+	TopicRepository := topics.NewRepository(dbClient)
+	TopicService := topics.NewService(TopicRepository, AnswerService)
+	TopicDelivery := topics.NewDelivery(TopicService)
 
 	e := echo.New()
 	e.HideBanner = true
@@ -53,6 +58,10 @@ func main() {
 	e.POST("/api/answer", AnswerDelivery.Post)
 	e.PUT("/api/answer/:id", AnswerDelivery.Update)
 	e.DELETE("/api/answer/:id", AnswerDelivery.Delete)
+
+	e.GET("/api/votes/:answer_id", VoteDelivery.GetAllByAnswer)
+	e.POST("/api/vote", VoteDelivery.Post)
+	e.PUT("/api/vote/:id", VoteDelivery.Update)
 
 	e.Logger.Fatal(e.Start(":1324"))
 }

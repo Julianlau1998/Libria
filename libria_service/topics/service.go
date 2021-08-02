@@ -2,6 +2,7 @@ package topics
 
 import (
 	"fmt"
+	"libria/answers"
 	"libria/models"
 	"math/rand"
 
@@ -10,11 +11,15 @@ import (
 )
 
 type Service struct {
-	topicRepo Repository
+	topicRepo     Repository
+	answerService answers.Service
 }
 
-func NewService(topicRepository Repository) Service {
-	return Service{topicRepo: topicRepository}
+func NewService(topicRepository Repository, answerService answers.Service) Service {
+	return Service{
+		topicRepo:     topicRepository,
+		answerService: answerService,
+	}
 }
 
 func (s *Service) GetAll() ([]models.Topic, error) {
@@ -42,11 +47,26 @@ func (s *Service) Post(topic *models.Topic) (*models.Topic, error) {
 		return topic, err
 	}
 	topic.ID = id.String()
-	answer, err := s.topicRepo.Post(topic)
-	if err != nil {
-		fmt.Print(err)
+	newTopic, err := s.topicRepo.Post(topic)
+
+	var answer models.Answer
+	answer.Text = topic.Body
+	answer.TopicID = id.String()
+	if topic.Body != "" {
+		newAnswer, err := s.answerService.Post(&answer)
+		if err != nil {
+			log.Warnf("TopicService.Post() Could not post bestAnswer: %s", err)
+			return newTopic, err
+		}
+		newTopic.Body = newAnswer.Text
+		newTopicAfterUpdate, err := s.Update(newTopic.ID, newTopic)
+		if err != nil {
+			log.Warnf("TopicService.Post() Could not Update Topic: %s", err)
+			return newTopic, err
+		}
+		return &newTopicAfterUpdate, err
 	}
-	return answer, err
+	return newTopic, err
 }
 
 func (s *Service) Update(id string, topic *models.Topic) (models.Topic, error) {

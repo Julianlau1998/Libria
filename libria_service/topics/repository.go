@@ -32,14 +32,14 @@ func (r *Repository) GetById(id string) (models.Topic, error) {
 }
 
 func (r *Repository) Post(topic *models.Topic) (*models.Topic, error) {
-	statement := `INSERT INTO topics (topic_id, title, body, votes, created_date) VALUES ($1, $2, $3, $4, $5)`
-	_, err := r.dbClient.Exec(statement, topic.ID, topic.Title, topic.Body, topic.Votes, time.Now())
+	statement := `INSERT INTO topics (topic_id, title, body, created_date, UserId, Username) VALUES ($1, $2, $3, $4, $5, $6)`
+	_, err := r.dbClient.Exec(statement, topic.ID, topic.Title, topic.Body, time.Now(), topic.UserID, topic.Username)
 	return topic, err
 }
 
 func (r *Repository) Update(topic *models.Topic) (models.Topic, error) {
-	query := `UPDATE topics SET title = $1, body = $2, votes = $3, updated_date = $4 WHERE topic_id = $5`
-	_, err := r.dbClient.Exec(query, topic.Title, topic.Body, topic.Votes, time.Now(), topic.ID)
+	query := `UPDATE topics SET title = $1, body = $2, updated_date = $3 WHERE topic_id = $4`
+	_, err := r.dbClient.Exec(query, topic.Title, topic.Body, time.Now(), topic.ID)
 
 	return *topic, err
 }
@@ -64,7 +64,7 @@ func (r *Repository) fetch(query string) ([]models.Topic, error) {
 	result := make([]models.Topic, 0)
 	for rows.Next() {
 		topicDB := models.TopicDB{}
-		err := rows.Scan(&topicDB.ID, &topicDB.Title, &topicDB.Body, &topicDB.Votes, &topicDB.CreatedDate, &topicDB.UpdatedDate)
+		err := rows.Scan(&topicDB.ID, &topicDB.UserID, &topicDB.Username, &topicDB.Title, &topicDB.Body, &topicDB.CreatedDate, &topicDB.UpdatedDate)
 		if err != nil {
 			if err == sql.ErrNoRows {
 				continue
@@ -79,7 +79,7 @@ func (r *Repository) fetch(query string) ([]models.Topic, error) {
 
 func (r *Repository) getOne(query string, id string) (models.Topic, error) {
 	topicDB := models.TopicDB{}
-	err := r.dbClient.QueryRow(query, id).Scan(&topicDB.ID, &topicDB.Title, &topicDB.Body, &topicDB.Votes, &topicDB.CreatedDate, &topicDB.UpdatedDate)
+	err := r.dbClient.QueryRow(query, id).Scan(&topicDB.ID, &topicDB.UserID, &topicDB.Username, &topicDB.Title, &topicDB.Body, &topicDB.CreatedDate, &topicDB.UpdatedDate)
 	if err != nil && err != sql.ErrNoRows {
 		log.Infof("Fehler beim Lesen der Daten: %v", err)
 	}

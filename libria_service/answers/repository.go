@@ -39,14 +39,14 @@ func (r *Repository) GetById(id string) (models.Answer, error) {
 }
 
 func (r *Repository) Post(answer *models.Answer) (*models.Answer, error) {
-	statement := `INSERT INTO answers (answer_id, topic_id, answer, votes, created_date) VALUES ($1, $2, $3, $4, $5)`
-	_, err := r.dbClient.Exec(statement, answer.ID, answer.TopicID, answer.Text, answer.Votes, time.Now())
+	statement := `INSERT INTO answers (answer_id, topic_id, answer, created_date, UserId, Username) VALUES ($1, $2, $3, $4, $5, $6)`
+	_, err := r.dbClient.Exec(statement, answer.ID, answer.TopicID, answer.Text, time.Now(), answer.UserID, answer.Username)
 	return answer, err
 }
 
 func (r *Repository) Update(answer *models.Answer) (models.Answer, error) {
-	query := `UPDATE answers SET answer = $1, votes = $2, updated_date = $3 WHERE answer_id = $4`
-	_, err := r.dbClient.Exec(query, answer.Text, answer.Votes, time.Now(), answer.ID)
+	query := `UPDATE answers SET answer = $1, updated_date = $2 WHERE answer_id = $3`
+	_, err := r.dbClient.Exec(query, answer.Text, time.Now(), answer.ID)
 
 	return *answer, err
 }
@@ -77,7 +77,7 @@ func (r *Repository) fetch(query string, topicID string) ([]models.Answer, error
 	result := make([]models.Answer, 0)
 	for rows.Next() {
 		answerDB := models.AnswerDB{}
-		err := rows.Scan(&answerDB.ID, &answerDB.TopicID, &answerDB.Text, &answerDB.Votes, &answerDB.CreatedDate, &answerDB.UpdatedDate)
+		err := rows.Scan(&answerDB.ID, &answerDB.TopicID, &answerDB.UserID, &answerDB.Username, &answerDB.Text, &answerDB.CreatedDate, &answerDB.UpdatedDate)
 		if err != nil {
 			if err == sql.ErrNoRows {
 				continue
@@ -92,7 +92,7 @@ func (r *Repository) fetch(query string, topicID string) ([]models.Answer, error
 
 func (r *Repository) getOne(query string, id string) (models.Answer, error) {
 	answerDB := models.AnswerDB{}
-	err := r.dbClient.QueryRow(query, id).Scan(&answerDB.ID, &answerDB.TopicID, &answerDB.Text, &answerDB.Votes, &answerDB.CreatedDate, &answerDB.UpdatedDate)
+	err := r.dbClient.QueryRow(query, id).Scan(&answerDB.ID, &answerDB.TopicID, &answerDB.UserID, &answerDB.Username, &answerDB.Text, &answerDB.CreatedDate, &answerDB.UpdatedDate)
 	if err != nil && err != sql.ErrNoRows {
 		log.Infof("Fehler beim Lesen der Daten: %v", err)
 	}

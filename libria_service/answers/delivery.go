@@ -2,6 +2,7 @@ package answers
 
 import (
 	"fmt"
+	"libria/auth"
 	"libria/models"
 	"net/http"
 
@@ -27,8 +28,8 @@ func (d *Delivery) GetAll(c echo.Context) error {
 }
 
 func (d *Delivery) GetAllByTopic(c echo.Context) error {
-	topicId := c.Param("topic_id")
-	answers, err := d.answerService.GetAllByTopic(topicId)
+	topicID := c.Param("topic_id")
+	answers, err := d.answerService.GetAllByTopic(topicID)
 	if err != nil {
 		return c.String(http.StatusInternalServerError, err.Error())
 	}
@@ -45,6 +46,11 @@ func (d *Delivery) GetById(c echo.Context) error {
 }
 
 func (d *Delivery) Post(c echo.Context) error {
+	req := c.Request()
+	headers := req.Header
+	if !auth.IsAuthorized(headers["Cookie"]) {
+		return c.String(http.StatusUnauthorized, "unauthorized")
+	}
 	requestBody := new(models.Answer)
 	if err := c.Bind(requestBody); err != nil {
 		return c.String(http.StatusBadRequest, err.Error())
@@ -59,8 +65,12 @@ func (d *Delivery) Post(c echo.Context) error {
 }
 
 func (d *Delivery) Update(c echo.Context) (err error) {
+	req := c.Request()
+	headers := req.Header
+	if !auth.IsAuthorized(headers["Cookie"]) {
+		return c.String(http.StatusUnauthorized, "unauthorized")
+	}
 	id := c.Param("id")
-
 	requestBody := new(models.Answer)
 	if err = c.Bind(requestBody); err != nil {
 		return c.String(http.StatusBadRequest, err.Error())
@@ -74,6 +84,11 @@ func (d *Delivery) Update(c echo.Context) (err error) {
 }
 
 func (d *Delivery) Delete(c echo.Context) (err error) {
+	req := c.Request()
+	headers := req.Header
+	if !auth.IsAuthorized(headers["Cookie"]) {
+		return c.String(http.StatusUnauthorized, "unauthorized")
+	}
 	id := c.Param("id")
 	answer, err := d.answerService.Delete(id)
 	if err != nil {
