@@ -2,8 +2,9 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import Topic from '../views/Topic.vue'
+import Profile from '../views/Profile.vue'
 
-// import { authGuard } from "../auth/authGuard";
+import { authGuard } from "../auth/authGuard";
 
 Vue.use(VueRouter)
 
@@ -18,6 +19,12 @@ const routes = [
     name: 'Topic',
     component: Topic,
     // beforeEnter: authGuard
+  },
+  {
+    path: '/profile',
+    name: 'Profile',
+    component: Profile,
+    beforeEnter: authGuard
   }
 ]
 

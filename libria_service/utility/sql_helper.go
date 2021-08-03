@@ -3,14 +3,17 @@ package utility
 import (
 	"database/sql"
 	"fmt"
+	"os"
 
+	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 )
 
 func NewDbClient() *sql.DB {
-	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s "+
+	godotenv.Load(".env")
+	psqlInfo := fmt.Sprintf("host=%s port=%s user=%s "+
 		"password=%s dbname=%s sslmode=disable",
-		"localhost", 3306, "postgres", "postgres", "libria")
+		os.Getenv("HOST"), os.Getenv("PORT"), os.Getenv("dbUser"), os.Getenv("dbPassword"), os.Getenv("dbName"))
 	conn, err := sql.Open("postgres", psqlInfo)
 	if err != nil {
 		panic(fmt.Sprintf("Verbindung mit Datenbank kann nicht hergestellt werden: %v", err))

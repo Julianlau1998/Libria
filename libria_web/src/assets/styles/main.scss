@@ -144,6 +144,28 @@ a.dropdown-item {
     }
 }
 
+.is-pill {
+    background-color: $white;
+    width: 90%;
+    margin-left: 5%;
+    height: 7rem;
+    color: $dark;
+    padding-top: 1.4rem;
+    border-radius: 30px;
+    box-shadow: 4px 4px 1px rgb(176, 176, 176);;
+}
+@media (min-width: $desktop) {
+    .is-extra-pill{
+        width: 80%;
+        margin: 0 auto;
+    } 
+}
+@media (max-width: $tablet) {
+    .is-pill{
+      font-size: 1.15rem !important;  
+    } 
+}
+
 /* Bulma extensions */
 
 .mb-7 {

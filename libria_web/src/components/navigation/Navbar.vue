@@ -25,12 +25,14 @@
 
   <div id="navbarBasicExample" class="navbar-menu ml-4" :class="{ 'is-active': isActive }">
     <div class="navbar-start">
-      <a class="navbar-item">
-        Home
+      <a class="navbar-item" @click="goHome()">
+          Home
       </a>
 
-      <a class="navbar-item">
-        Profile
+      <a class="navbar-item" @click="openProfile()" v-if="!$auth.loading">
+        <span v-if="$auth.isAuthenticated">
+          Profile
+        </span>
       </a>
       <br>
 <!-- 
@@ -132,6 +134,12 @@ export default {
       },
       openMobileMenu () {
         this.isActive = !this.isActive
+      },
+      goHome () {
+        this.$router.push('/')
+      },
+      openProfile () {
+        this.$router.push('/profile')
       }
     },
     created () {
