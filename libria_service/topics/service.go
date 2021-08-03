@@ -52,6 +52,8 @@ func (s *Service) Post(topic *models.Topic) (*models.Topic, error) {
 	var answer models.Answer
 	answer.Text = topic.Body
 	answer.TopicID = id.String()
+	answer.UserID = topic.UserID
+	answer.Username = topic.Username
 	if topic.Body != "" {
 		newAnswer, err := s.answerService.Post(&answer)
 		if err != nil {

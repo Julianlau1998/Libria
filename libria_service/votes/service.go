@@ -1,7 +1,7 @@
 package votes
 
 import (
-	"fmt"
+	"errors"
 	"libria/models"
 
 	uuid "github.com/nu7hatch/gouuid"
@@ -27,8 +27,19 @@ func (s *Service) Post(vote *models.Vote) (*models.Vote, error) {
 		log.Warnf("VoteService.Post() Could not create new uuid: %s", err)
 		return vote, err
 	}
+	allVotesByAnswer, err := s.GetAllByAnswer(vote.AnswerID)
+	if err != nil {
+		log.Warnf("VoteService.Post() Could not load votes by answer: %s", err)
+		return vote, err
+	}
+	for _, oldVote := range allVotesByAnswer {
+		if oldVote.UserID == vote.UserID {
+			err = errors.New("unauthorized")
+			return vote, err
+		}
+	}
+
 	vote.ID = id.String()
-	fmt.Print(vote.AnswerID)
 	vote, err = s.voteRepo.Post(vote)
 	if err != nil {
 		log.Warnf("VoteService.Post() Could not Post Vote: %s", err)

@@ -71,6 +71,9 @@ func (d *Delivery) Update(c echo.Context) (err error) {
 	if err = c.Bind(requestBody); err != nil {
 		return c.String(http.StatusBadRequest, err.Error())
 	}
+	if headers.Get("UserId") != requestBody.UserID {
+		return c.String(http.StatusUnauthorized, "unauthorized")
+	}
 	topic, err := d.topicService.Update(id, requestBody)
 	if err != nil {
 		fmt.Println(err)

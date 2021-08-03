@@ -28,8 +28,10 @@ func (d *Delivery) GetAll(c echo.Context) error {
 }
 
 func (d *Delivery) GetAllByTopic(c echo.Context) error {
+	req := c.Request()
+	userId := req.Header.Get("UserId")
 	topicID := c.Param("topic_id")
-	answers, err := d.answerService.GetAllByTopic(topicID)
+	answers, err := d.answerService.GetAllByTopic(topicID, userId)
 	if err != nil {
 		return c.String(http.StatusInternalServerError, err.Error())
 	}
@@ -75,6 +77,9 @@ func (d *Delivery) Update(c echo.Context) (err error) {
 	if err = c.Bind(requestBody); err != nil {
 		return c.String(http.StatusBadRequest, err.Error())
 	}
+	if headers.Get("UserId") != requestBody.UserID {
+		return c.String(http.StatusUnauthorized, "unauthorized")
+	}
 	answer, err := d.answerService.Update(id, requestBody)
 	if err != nil {
 		fmt.Println(err)
@@ -90,6 +95,15 @@ func (d *Delivery) Delete(c echo.Context) (err error) {
 		return c.String(http.StatusUnauthorized, "unauthorized")
 	}
 	id := c.Param("id")
+	requestBody := new(models.Answer)
+	if err = c.Bind(requestBody); err != nil {
+		return c.String(http.StatusBadRequest, err.Error())
+	}
+	fmt.Print(requestBody.UserID)
+
+	if headers.Get("UserId") != requestBody.UserID {
+		return c.String(http.StatusUnauthorized, "unauthorized")
+	}
 	answer, err := d.answerService.Delete(id)
 	if err != nil {
 		fmt.Println(err)

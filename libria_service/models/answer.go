@@ -6,14 +6,16 @@ import (
 )
 
 type Answer struct {
-	ID          string `json:"id"`
-	TopicID     string `json:"topic_id"`
-	UserID      string `json:"user_id"`
-	Text        string `json:"body"`
-	Username    string `json:"username"`
-	CreatedDate string `json:"created_date"`
-	UpdatedDate string `json:"updated_date"`
-	Votes       []Vote `json:"votes"`
+	ID            string `json:"id"`
+	TopicID       string `json:"topic_id"`
+	UserID        string `json:"user_id"`
+	Text          string `json:"body"`
+	Username      string `json:"username"`
+	CreatedDate   string `json:"created_date"`
+	UpdatedDate   string `json:"updated_date"`
+	Votes         []Vote `json:"votes"`
+	UpvotedByMe   bool   `json:"upvoted_by_me"`
+	DownvotedByMe bool   `json:"downvoted_by_me"`
 }
 
 type AnswerDB struct {
