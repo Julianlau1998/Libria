@@ -24,10 +24,5 @@
 
 <script>
 export default {
-    methods: {
-        test () {
-            console.log(this.$auth.user)
-        }
-    }
 }
 </script>
