@@ -1,0 +1,32 @@
+@import './variables.scss';
+
+.is-router-link {
+    color: $black;
+}
+.is-router-link:visited {
+    color: $black;
+}
+.is-log-in-buttons {
+    position: fixed;
+    top: 0.6rem;
+    right: 2rem;
+}
+@media (max-width: $tablet) {
+    .is-log-in-buttons {
+        position: relative;
+        top: 0rem;
+        right: 0rem;
+    }
+}
+
+.is-log-in-button {
+    border-radius: 20px;
+    width: 7rem;
+}
+
+.navbar-item {
+    font-size: 1.3rem;
+}
+.navbar-burger:hover {
+    background-color: white;
+}

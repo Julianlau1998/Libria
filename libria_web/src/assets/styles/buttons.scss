@@ -1,0 +1,43 @@
+@import './variables.scss';
+
+.is-circle {
+    border-radius: 100%;
+}
+
+.is-add-button {
+    width: 4.3rem;
+    height: 4.3rem;
+    position: fixed;
+    bottom: 1.8rem;
+    margin-left: -2rem;
+    background: black;
+    color: white;
+    border: 3px solid white;
+    font-size: 1.8rem;
+}
+
+.is-add-button:hover {
+    color: white;
+}
+
+.plusButton {
+    position: fixed;
+    bottom: 1rem;
+    padding-bottom: 3.5rem;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 4.9rem;
+    height: 4.9rem;
+    font-size: 3.2em;
+    background-color: transparent;
+    border-radius: 100%;
+    border: none;
+    box-shadow: -1px -1px 4px 0px rgb(133, 133, 133),
+                 1px 1px 5px 2px black;
+    color: white;
+    cursor: pointer;
+}
+.plusButton:active {
+  box-shadow: -1px -1px 4px 0px black,
+              1px 1px 3px 0px rgb(133, 133, 133);
+  }

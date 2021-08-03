@@ -1,0 +1,30 @@
+@import './variables.scss';
+
+.input {
+    width: 90%;
+}
+.is-search-icon {
+    margin-right: 2rem;
+}
+.textarea-wrapper {
+    width: 40rem;
+}
+
+@media (min-width: $tablet) {
+    .input {
+        width: 50%;
+    }
+    .is-search-icon {
+        margin-right: 26%;
+    }
+}
+@media (max-width: $tablet) {
+    .textarea-wrapper {
+        width: 100vw;
+    }
+}
+@media (max-width: $mobile) {
+    .textarea:not([rows]) {
+        min-height: 14rem;
+    }
+}

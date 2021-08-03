@@ -1,0 +1,154 @@
+@import './variables.scss';
+@import '~bulma';
+
+html {
+    background-color: $mainBackground;
+    color: white;
+}
+.container {
+    margin-top: 7rem;
+} 
+
+@media (max-width: $tablet) {
+    .container {
+        margin-top: 5.5rem;
+    } 
+}
+
+.is-smaller-card-width {
+    width: 100%;
+}
+
+.card {
+    background-color: $primary;
+    color: white;
+    border-radius: 10px;
+    cursor: pointer;
+    box-shadow: 0px -1px 1px white;
+    min-height: 10rem;
+    z-index: 0;
+    padding-bottom: 1rem;
+    padding-top: 2.3rem;
+
+    &.is-wide-card  {
+        width: 40rem;
+        margin: 0 auto;
+        padding-bottom: 0.5rem;
+        padding-top: 0rem;
+    }
+}
+.card:hover {
+    box-shadow: 0px -2px 1px white;
+}
+#card-content-topic,
+#card-content-answer,
+.card-content {
+    width: 90%;
+    margin-top: -0.8rem;
+    margin-bottom: 0.3rem;
+    padding-top: 0.6rem;
+
+    &.is-wide-card-content {
+        margin-top: -0rem;
+    }
+}
+#card-content-topic {
+    margin-top: 1.3rem;
+    margin-left: 1.2rem;
+} 
+.singleColumn {
+    width: 42rem;
+    margin: 0 auto;
+}
+.card-body {
+    opacity: 0.8;
+}
+#card-body-1 {
+    color: $success;
+}
+#card-body-2 {
+    color: $warning;
+}
+#card-body-3 {
+    color: $info;
+}
+#card-body-4 {
+    color: $danger;
+}
+
+@media (max-width: $tablet) {
+    .card {
+        border-radius: 8px;
+        margin-bottom: -2.5rem;
+        width: 98vw;
+        margin-left: 1%;
+        box-shadow: none;
+        margin-bottom: -2rem;
+        border: 1px solid white;
+        padding-bottom: 0.5rem;
+        padding-top: 1.5rem;
+    }
+    .card-content {
+        margin-top: 0;
+        margin-bottom: 1.3rem;
+    }
+    #card-content-topic {
+        margin-left: 1.6rem;
+    } 
+    .columns { 
+        width: 100%;
+        padding: 0;
+        margin-right: 0 !important;
+    }
+    .singleColumn {
+        width: 100vw;
+        margin: 1.4rem auto;
+    }
+}
+.is-card-title {
+    margin-top: -5.5rem;
+}
+.is-username {
+    position: absolute;
+    left: 1rem;
+    top: 0.6rem;
+}
+.is-comment-icon {
+    position: absolute;
+    left: 1rem;
+    bottom: 0.8rem;
+}
+.is-dropdown-item {
+    top: -1.7rem;
+    left: -5rem;
+}
+
+a.dropdown-item {
+    padding-right: 1.5rem;
+    font-size: 1.4rem;
+}
+.dropdown-menu {
+    margin-top: 3rem;
+    background-color: $black;
+}
+.is-dropdown-item {
+    top: -1.2rem;
+    font-weight: bold;
+}
+.is-error {
+    color : $danger;
+}
+@media (max-width: $tablet) {
+    .is-dropdown-item {
+        top: 1rem;
+    }
+}
+
+/* Bulma extensions */
+
+.mb-7 {
+    margin-bottom: 4rem;
+}
+.mb-8 {
+    margin-bottom: 6rem;
+}
