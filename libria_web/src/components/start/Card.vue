@@ -156,15 +156,19 @@ export default {
             }
         },
         downvoteAnswer () {
-            if (this.type === 'answer' && !this.card.upvoted_by_me && !this.card.downvoted_by_me) {
-                this.downvote = true
-                this.$store.state.answerModule.answers.data.forEach(answer => {
-                    if (answer.id === this.card.id) {
-                        answer.downvoted_by_me = true
-                        answer.votes.push({ upvote: 'false', user_id: this.$auth.user.sub})
-                    }
-                })
-                this.$store.dispatch('votesModule/post', {upvote: 'false', answer_id: this.card.id, user_id: this.$auth.user.sub})
+            if (this.$auth.isAuthenticated) {
+                if (this.type === 'answer' && !this.card.upvoted_by_me && !this.card.downvoted_by_me) {
+                    this.downvote = true
+                    this.$store.state.answerModule.answers.data.forEach(answer => {
+                        if (answer.id === this.card.id) {
+                            answer.downvoted_by_me = true
+                            answer.votes.push({ upvote: 'false', user_id: this.$auth.user.sub})
+                        }
+                    })
+                    this.$store.dispatch('votesModule/post', {upvote: 'false', answer_id: this.card.id, user_id: this.$auth.user.sub})
+                }
+            } else {
+                this.$store.state.login_modal = true
             }
         }
     }

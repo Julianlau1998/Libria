@@ -11,7 +11,12 @@
     top: 0.6rem;
     right: 2rem;
 }
-@media (max-width: $tablet) {
+.navbar-burger {
+    position: relative;
+    top: 0.1rem;
+    right: 0.2rem;
+}
+@media (max-width: 1300px) {
     .is-log-in-buttons {
         position: relative;
         top: 0rem;
